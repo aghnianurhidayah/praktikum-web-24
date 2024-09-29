@@ -20,7 +20,7 @@
 
 <body>
   <!-- Navbar -->
-  <?php include("expand/navbar.php"); ?>
+  <?php include("navbar.php"); ?>
 
   <!-- Hero  -->
   <main class="hero-section">
@@ -57,7 +57,7 @@
   </main>
 
   <!-- Footbar -->
-  <?php include("expand/footer.php") ?>
+  <?php include("footer.php") ?>
 
   <script src="/scripts/script.js"></script>
 </body>

@@ -20,7 +20,7 @@
 
 <body>
   <!-- Navbar -->
-  <?php include("expand/navbar.php") ?>
+  <?php include("navbar.php") ?>
 
   <!-- Tentang Kami -->
   <main class="about-us-section">
@@ -74,7 +74,7 @@
   </main>
 
   <!-- Footbar -->
-  <?php include("expand/footer.php") ?>
+  <?php include("footer.php") ?>
 
   <script src="/scripts/script.js"></script>
 </body>
