@@ -1,3 +1,14 @@
+<?php
+  require "koneksi.php";
+
+  $sql = mysqli_query($conn, "SELECT * FROM mhs");
+
+  $mahasiswa = [];
+  while ($row = mysqli_fetch_assoc($sql)) {
+      $mahasiswa[] = $row;
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +22,8 @@
   <link rel="stylesheet" href="styles/base.css" />
 
   <link rel="stylesheet" href="styles/home.css" />
+
+  <link rel="stylesheet" href="styles/admin.css">
 </head>
 
 <body>
@@ -39,33 +52,21 @@
           <th class="table-mahasiswa-header">Foto</th>
           <th class="table-mahasiswa-header">Nama</th>
           <th class="table-mahasiswa-header">NIM</th>
+          <th class="table-mahasiswa-header">Kelas</th>
+          <th class="table-mahasiswa-header">Prodi</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="table-mahasiswa-row">
-          <td class="table-mahasiswa-data">1</td>
-          <td class="table-mahasiswa-data">Ini foto</td>
-          <td class="table-mahasiswa-data">Muhammad Farrel Sirah</td>
-          <td class="table-mahasiswa-data">2209106138</td>
-        </tr>
-        <tr class="table-mahasiswa-row">
-          <td class="table-mahasiswa-data">2</td>
-          <td class="table-mahasiswa-data">Ini foto</td>
-          <td class="table-mahasiswa-data">Miftahul Huda</td>
-          <td class="table-mahasiswa-data">2209106098</td>
-        </tr>
-        <tr class="table-mahasiswa-row">
-          <td class="table-mahasiswa-data">3</td>
-          <td class="table-mahasiswa-data">Ini foto</td>
-          <td class="table-mahasiswa-data">Ahmad Dhafin</td>
-          <td class="table-mahasiswa-data">2209106169</td>
-        </tr>
-        <tr class="table-mahasiswa-row">
-          <td class="table-mahasiswa-data">4</td>
-          <td class="table-mahasiswa-data">Ini foto</td>
-          <td class="table-mahasiswa-data">Fiko Anugrah Ramdani</td>
-          <td class="table-mahasiswa-data">2209106313</td>
-        </tr>
+        <?php $i = 1; foreach($mahasiswa as $mhs) : ?>
+          <tr class="table-mahasiswa-row">
+            <td class="table-mahasiswa-data"><?php echo $i ?></td>
+            <td class="table-mahasiswa-data"></td>
+            <td class="table-mahasiswa-data"><?php echo $mhs['nama'] ?></td>
+            <td class="table-mahasiswa-data"><?php echo $mhs['nim'] ?></td>
+            <td class="table-mahasiswa-data"><?php echo $mhs['kelas'] ?></td>
+            <td class="table-mahasiswa-data"><?php echo $mhs['prodi'] ?></td>
+          </tr>
+        <?php $i++; endforeach ?>
       </tbody>
     </table>
   </main>

@@ -1,3 +1,14 @@
+<?php
+  require "koneksi.php";
+
+  $sql = mysqli_query($conn, "SELECT * FROM mhs");
+
+  $mahasiswa = [];
+  while ($row = mysqli_fetch_assoc($sql)) {
+      $mahasiswa[] = $row;
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,9 +43,11 @@
     </search>
 
     <div class="container">
-      <button class="tambah">
-        <p>Tambah</p>
-      </button>
+      <a href="tambah.php">
+        <button class="tambah">
+          <p>Tambah</p>
+        </button>
+      </a>
       <a href="index.php">
         <button class="back">
           <p>Back</p>
@@ -49,29 +62,37 @@
           <th class="table-mahasiswa-header">Foto</th>
           <th class="table-mahasiswa-header">Nama</th>
           <th class="table-mahasiswa-header">NIM</th>
+          <th class="table-mahasiswa-header">Kelas</th>
+          <th class="table-mahasiswa-header">Prodi</th>
           <th class="table-mahasiswa-header">Aksi</th>
         </tr>
       </thead>
 
       <tbody>
-        <?php for ($i = 0; $i < 5; $i++) : ?>
+        <?php $i = 1; foreach($mahasiswa as $mhs) : ?>
           <tr class="table-mahasiswa-row">
-            <td class="table-mahasiswa-data">1</td>
-            <td class="table-mahasiswa-data">Ini foto</td>
-            <td class="table-mahasiswa-data">Muhammad Farrel Sirah</td>
-            <td class="table-mahasiswa-data">2209106138</td>
+            <td class="table-mahasiswa-data"><?php echo $i ?></td>
+            <td class="table-mahasiswa-data"></td>
+            <td class="table-mahasiswa-data"><?php echo $mhs['nama'] ?></td>
+            <td class="table-mahasiswa-data"><?php echo $mhs['nim'] ?></td>
+            <td class="table-mahasiswa-data"><?php echo $mhs['kelas'] ?></td>
+            <td class="table-mahasiswa-data"><?php echo $mhs['prodi'] ?></td>
             <td class="table-mahasiswa-data">
               <div class="button-UD">
-                <button class="edit-data">
-                  <i class="fa-solid fa-pen" style="color: #ffffff;"></i>
-                </button>
-                <button class="hapus-data">
-                  <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
-                </button>
+                <a href="edit.php?id=<?php echo $mhs['id']?>">
+                  <button class="edit-data">
+                    <i class="fa-solid fa-pen" style="color: #ffffff;"></i>
+                  </button>
+                </a>
+                <a href="delete.php?id=<?php echo $mhs['id']?>" onclick="return confirm('Yakin ingin menghapus data ini?');">
+                  <button class="hapus-data">
+                    <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
+                  </button>
+                </a>
               </div>
             </td>
           </tr>
-        <?php endfor ?>
+        <?php $i++; endforeach ?>
       </tbody>
     </table>
   </main>
