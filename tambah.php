@@ -1,28 +1,51 @@
 <?php
 require "koneksi.php";
 
-if (isset($_POST['tambah'])) {
-  $nama = htmlspecialchars($_POST['nama']);
-  $nim = htmlspecialchars($_POST['nim']);
-  $kelas = htmlspecialchars($_POST['kelas']);
-  $prodi = htmlspecialchars($_POST['prodi']);
+if (isset($_POST['tambah'])) { // Mengecek apakah $_POST['tambah'] bernilai true
+  $nama = $_POST['nama']; // Mengambil data dari form nama
+  $nim = $_POST['nim']; // mengambil data dari form nim
+  $kelas = $_POST['kelas']; // mengambil data dari form kelas
+  $prodi = $_POST['prodi']; // mengambil data dari form prodi
 
-  $sql = "INSERT INTO mhs VALUES ('', '$nama', '$nim', '$kelas', '$prodi', '')";
+  $tmp_name = $_FILES['foto']['tmp_name']; // mengambil path temporary file
+  $file_name = $_FILES['foto']['name']; // mengambil nama file
 
-  $result = mysqli_query($conn, $sql);
-
-  if ($result) {
+  // cek apakah yang diupload adalah file gambar
+  $validExtensions = ['png', 'jpg', 'jpeg'];
+  $fileExtension = explode('.', $file_name);
+  $fileExtension = strtolower(end($fileExtension));
+  if (!in_array($fileExtension, $validExtensions)) {
     echo "
-          <script>
-              alert('Berhasil menambah data mahasiswa!');
-              document.location.href = 'CRUDAdmin.php';
-          </script>";
+            <script>
+                alert('Tolong upload file gambar!');
+            </script>";
   } else {
-    echo "
-          <script>
-              alert('Gagal menambah data mahasiswa!');
-              document.location.href = 'CRUDAdmin.php';
-          </script>";
+    if (move_uploaded_file($tmp_name, 'images/'.$file_name)) {
+      // Menulis query SQL
+      $sql = "INSERT INTO mhs VALUES (null, '$nama', '$nim', '$kelas', '$prodi', '$file_name')";
+    
+      // Mengeksekusi query SQL pada database
+      $result = mysqli_query($conn, $sql);
+    
+      if ($result) {
+        echo "
+              <script>
+                  alert('Berhasil menambah data mahasiswa!');
+                  document.location.href = 'CRUDAdmin.php';
+              </script>";
+      } else {
+        echo "
+              <script>
+                  alert('Gagal menambah data mahasiswa!');
+                  document.location.href = 'CRUDAdmin.php';
+              </script>";
+      }
+    } else {
+      echo "
+              <script>
+                  alert('File tidak valid!');
+              </script>";
+    }
   }
 }
 ?>
@@ -62,14 +85,15 @@ if (isset($_POST['tambah'])) {
     </div>
 
     <div class="form-mhs">
-      <form action="" method="post">
+      <!-- menambahkan enctype -->
+      <form action="" method="post" enctype="multipart/form-data">
         <div class="input-field">
           <label class="label-field" for="nama">Nama Lengkap</label>
-          <input type="text" name="nama" id="nama" required>
+          <input type="text" name="nama" id="nama" value="" required>
         </div>
         <div class="input-field">
           <label class="label-field" for="nim">NIM</label>
-          <input type="number" name="nim" id="nim" required>
+          <input type="number" name="nim" id="nim" value="" required>
         </div>
         <div class="input-field">
           <label class="label-field" for="kelas">Kelas</label>
@@ -89,6 +113,13 @@ if (isset($_POST['tambah'])) {
             <option name="prodi" value="Sistem Informasi">Sistem Informasi</option>
           </select>
         </div>
+        
+        <!-- menambahkan input type file -->
+         <div class="input-field">
+          <label for="foto" class="label-field">Foto</label>
+          <input type="file" name="foto" id="foto" style="border: 1px solid rgba(0, 0, 0, 0.6); border-radius: 9px; padding: 7px 10px; font-size:16px" required>
+         </div>
+
         <input class="button" type="submit" value="Tambah" name="tambah">
       </form>
     </div>

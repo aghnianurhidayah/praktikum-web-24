@@ -1,6 +1,7 @@
 <?php
     require "koneksi.php";
 
+    // Mengambil ID yang dilempar oleh link
     $id = $_GET['id'];
 
     $result = mysqli_query($conn, "SELECT * FROM mhs WHERE id = $id");
@@ -11,6 +12,8 @@
         $mahasiswa[] = $row;
     }
 
+    // Karena $mahasiswa adalah sebuah array yang berisi array
+    // Untuk mengeluarkan datanya maka dilakukan cara berikut
     $mahasiswa = $mahasiswa[0];
 
     if (isset($_POST['ubah'])) {
@@ -19,7 +22,30 @@
     $kelas = $_POST['kelas'];
     $prodi = $_POST['prodi'];
 
-    $sql = "UPDATE mhs SET nama='$nama', nim='$nim', kelas='$kelas', prodi='$prodi' WHERE id=$id";
+    $oldImg = $_POST['oldimg'];
+
+    if ($_FILES['foto']['error'] === 4) { // cek apakah ada file yg diupload
+      $file_name = $oldImg; // kalo tidak, akan mengambil gambar lama
+    } else {
+      $tmp_name = $_FILES['foto']['tmp_name']; // mengambil path temporary file
+      $file_name = $_FILES['foto']['name']; // mengambil nama file
+
+      // cek apakah yang diupload adalah file gambar
+      $validExtensions = ['png', 'jpg', 'jpeg'];
+      $fileExtension = explode('.', $file_name);
+      $fileExtension = strtolower(end($fileExtension));
+      if (!in_array($fileExtension, $validExtensions)) {
+        echo "
+                <script>
+                    alert('Tolong upload file gambar!');
+                </script>";
+      } else {
+        move_uploaded_file($tmp_name, 'images/' . $file_name);
+        unlink('images/'.$oldImg); // menghapus gambar lama dari folder images
+      }
+    }
+
+    $sql = "UPDATE mhs SET nama='$nama', nim='$nim', kelas='$kelas', prodi='$prodi', foto='$file_name' WHERE id=$id";
 
     $result = mysqli_query($conn, $sql);
 
@@ -74,7 +100,11 @@
     </div>
 
     <div class="form-mhs">
-      <form action="" method="post">
+      <form action="" method="post" enctype="multipart/form-data">
+
+        <!-- menambahkan input hidden untuk menyimpan foto lama -->
+        <input type="hidden" name="oldimg" value="<?= $mahasiswa['foto'] ?>">
+
         <div class="input-field">
           <label class="label-field" for="nama">Nama Lengkap</label>
           <input type="text" name="nama" id="nama" value="<?php echo $mahasiswa['nama'] ?>" required>
@@ -86,11 +116,14 @@
         <div class="input-field">
           <label class="label-field" for="kelas">Kelas</label>
           <div class="form-check">
-            <input type="radio" name="kelas" id="kelasA" value="A" <?php if ($mahasiswa['kelas'] == "A") echo "checked";?>/>
+            <input type="radio" name="kelas" id="kelasA" value="A" 
+            <?php if ($mahasiswa['kelas'] == "A") echo "checked";?>/>
             <label for="kelasA">A</label></br>
-            <input type="radio" name="kelas" id="kelasB" value="B" <?php if ($mahasiswa['kelas'] == "B") echo "checked";?>/>
+            <input type="radio" name="kelas" id="kelasB" value="B" 
+            <?php if ($mahasiswa['kelas'] == "B") echo "checked";?>/>
             <label for="kelasB">B</label></br>
-            <input type="radio" name="kelas" id="kelasC" value="C" <?php if ($mahasiswa['kelas'] == "C") echo "checked";?>/>
+            <input type="radio" name="kelas" id="kelasC" value="C" 
+            <?php if ($mahasiswa['kelas'] == "C") echo "checked";?>/>
             <label for="kelasC">C</label>
           </div>
         </div>
@@ -102,6 +135,14 @@
             <option value="Sistem Informasi">Sistem Informasi</option>
           </select>
         </div>
+
+        <!-- menambahkan input type file -->
+         <div class="input-field" style="border: 1px solid rgba(0, 0, 0, 0.6); border-radius: 9px; padding: 7px 10px; font-size:16px">
+          <label for="foto" class="label-field">Foto</label>
+          <input type="file" name="foto" id="foto">
+          <br>
+          <img src="images/<?= $mahasiswa['foto'] ?>" alt="<?= $mahasiswa['foto'] ?>" width="80px" height="100px">
+         </div>
         <input class="button" type="submit" value="Ubah" name="ubah">
       </form>
     </div>

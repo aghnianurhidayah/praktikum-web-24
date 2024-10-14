@@ -1,9 +1,12 @@
 <?php
   require "koneksi.php";
 
+  // Untuk melakukan perintah SQL
   $sql = mysqli_query($conn, "SELECT * FROM mhs");
 
+  // Menyiapkan array assosiatif
   $mahasiswa = [];
+  // Memindahkan data dari $sql ke array rows
   while ($row = mysqli_fetch_assoc($sql)) {
       $mahasiswa[] = $row;
   }
@@ -72,7 +75,9 @@
         <?php $i = 1; foreach($mahasiswa as $mhs) : ?>
           <tr class="table-mahasiswa-row">
             <td class="table-mahasiswa-data"><?php echo $i ?></td>
-            <td class="table-mahasiswa-data"></td>
+            <td class="table-mahasiswa-data">
+              <img src="images/<?= $mhs['foto'] ?>" alt="<?= $mhs['foto'] ?>" width="80px" height="100px" style="display: block; margin: 0 auto;">
+            </td>
             <td class="table-mahasiswa-data"><?php echo $mhs['nama'] ?></td>
             <td class="table-mahasiswa-data"><?php echo $mhs['nim'] ?></td>
             <td class="table-mahasiswa-data"><?php echo $mhs['kelas'] ?></td>
@@ -84,7 +89,8 @@
                     <i class="fa-solid fa-pen" style="color: #ffffff;"></i>
                   </button>
                 </a>
-                <a href="delete.php?id=<?php echo $mhs['id']?>" onclick="return confirm('Yakin ingin menghapus data ini?');">
+                <a href="delete.php?id=<?php echo $mhs['id']?>" 
+                onclick="return confirm('Yakin ingin menghapus data ini?');">
                   <button class="hapus-data">
                     <i class="fa-solid fa-trash-can" style="color: #ffffff;"></i>
                   </button>
